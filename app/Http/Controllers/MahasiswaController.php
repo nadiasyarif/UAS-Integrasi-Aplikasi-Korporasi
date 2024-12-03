@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MahasiswaExport;
 use App\Models\Mahasiswa;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaController extends Controller
 {
@@ -87,5 +90,45 @@ class MahasiswaController extends Controller
             return redirect()->back()->with('success','Mahasiswa Berhasil di Hapus');
         }
         return redirect()->back()->with('error','Mahasiswa TidaK Ditemukan');
+    }
+
+    public function exportExcel ()
+    {
+        return Excel::download(new MahasiswaExport, 'mahasiswa.xlsx');
+    }
+
+    public function exportToPDF()
+    {
+        // Ambil data dari kelas export
+        $export = new MahasiswaExport();
+        $mahasiswas = $export->collection(); // Mengambil koleksi data produk
+
+        // Buat HTML langsung dari data
+        $html = '<h1>Mahasiswa List</h1>';
+        $html .= '<table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">';
+        $html .= '<thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NPM</th>
+                        <th>Nama</th>
+                        <th>Program Studi</th>
+                    </tr>
+                  </thead>';
+        $html .= '<tbody>';
+        foreach ($mahasiswas as $mahasiswa) {
+            $html .= '<tr>
+                        <td>' . $mahasiswa->id . '</td>
+                        <td>' . $mahasiswa->npm . '</td>
+                        <td>' . $mahasiswa->nama . '</td>
+                        <td>' . $mahasiswa->prodi . '</td>
+                      </tr>';
+        }
+        $html .= '</tbody></table>';
+
+        // Buat PDF dari HTML
+        $pdf = Pdf::loadHTML($html);
+
+        // Download PDF
+        return $pdf->download('mahasiswa.pdf');
     }
 }
