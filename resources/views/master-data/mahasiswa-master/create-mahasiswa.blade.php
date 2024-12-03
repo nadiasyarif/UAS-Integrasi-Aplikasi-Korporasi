@@ -37,8 +37,8 @@
                                 <label for="prodi" class="block text-sm font-medium text-gray-700">Program Studi</label>
                                 <select id="prodi" name="prodi" class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
                                     <option value="" disabled selected>Pilih Program Studi</option>
-                                    <option value="si">Sistem Informasi (SI)</option>
-                                    <option value="if">Informatika (IF)</option>
+                                    <option value="Sistem Informasi">Sistem Informasi (SI)</option>
+                                    <option value="Informatika">Informatika (IF)</option>
                                 </select>
                             </div>
 

@@ -10,9 +10,18 @@ class MahasiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Mahasiswa::query();
+
+        if($request->has('search') && $request->search != ''){
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%');
+            });
+        }
+        $mahasiswas = $query->paginate(2);
+        return view("master-data.mahasiswa-master.index-mahasiswa", compact('mahasiswas'));
     }
 
     /**
@@ -46,7 +55,9 @@ class MahasiswaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $mahasiswas = Mahasiswa::findOrFail($id);
+        return view("master-data.mahasiswa-master.detail-mahasiswa", compact('mahasiswas'));
+    
     }
 
     /**
@@ -70,6 +81,11 @@ class MahasiswaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $mahasiswas = Mahasiswa::find($id);
+        if($mahasiswas){
+            $mahasiswas->delete();
+            return redirect()->back()->with('success','Mahasiswa Berhasil di Hapus');
+        }
+        return redirect()->back()->with('error','Mahasiswa TidaK Ditemukan');
     }
 }
